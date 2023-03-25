@@ -1,0 +1,70 @@
+server:
+  port: 8090
+
+spring:
+  application:
+    name: user-service
+  datasource:
+      url: jdbc:mysql://localhost:3306/microservicedemo
+      username: root
+      password: Rakesh@2022
+  jpa:
+    hibernate:
+        ddl-auto: update
+        show-sql: true
+  config:
+    import: optional:configserver:http://localhost:8093
+
+
+management:
+  health:
+    circuitbreakers:
+      enabled: true
+  endpoints:
+      web:
+        exposure:
+          include: health
+  endpoint:
+    health:
+      show-details: always
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      rating_hotel_breaker:
+        registerHealthIndicator: true
+        eventConsumerBufferSize: 10
+        failureRateThreshold: 50
+        minimumNumberOfCalls: 5
+        autoMaticTransitionFromOpenToHalfOpenEnabled: true
+        waitDurationInOpenState: 6s
+        permittedNumberOfCallsInHalfOpenState: 3
+        slidingWindowSizeType: COUNT_BASED
+
+  retry:
+    instances:
+      rating_hotel_service:
+        max-attempts: 3
+        wait-duration: 5s
+
+  rateLimiter:
+    instances:
+      user_rate_limiter:
+        limit-refresh-period: 4s
+        limit-for-period: 2
+        timeout-duration: 2s
+
+
+
+
+#  profiles:
+#    active: default
+
+
+#eureka:
+#  client:
+#    fetch-registry: true
+#    register-with-eureka: true
+#    service-url:
+#      defaultZone: http://localhost:8761/eureka
+

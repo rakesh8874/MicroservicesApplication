@@ -1,0 +1,27 @@
+service:
+  name: rating-service
+
+
+server:
+  port: 8092
+spring:
+  application:
+    name: rating-service
+  data:
+    mongodb:
+      database: ratingService
+      uri: mongodb://localhost:27017
+  error:
+    include-message: always
+
+eureka:
+    client:
+       fetch-registry: true
+       register-with-eureka: true
+       service-url:
+         defaultZone: http://localhost:8761/eureka
+
+
+
+
+
